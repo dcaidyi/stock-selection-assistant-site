@@ -102,10 +102,19 @@ async function decryptBundle(encrypted, password) {
 function renderLatest(report) {
   byId("primary-action").textContent = report.primaryAction;
   byId("recommendation").textContent = report.recommendation;
+  renderDataBanner(report);
   byId("logic-steps").innerHTML = report.logicSteps.map((step) => `<li>${escapeHtml(step)}</li>`).join("");
   byId("source-row").innerHTML = report.sources.map((source) => `<span class="chip">${escapeHtml(source.name)} · ${escapeHtml(source.status)}</span>`).join("");
   byId("holdings").innerHTML = report.holdings.map(renderHolding).join("");
   byId("candidate").innerHTML = report.candidate ? renderCandidate(report.candidate) : "<p class='muted'>今日无候选。</p>";
+}
+
+function renderDataBanner(report) {
+  const source = report.sources?.[0];
+  const isLive = report.marketEnvironment === "live-market-snapshot" && source?.status !== "failed";
+  byId("data-banner").textContent = isLive
+    ? `真实行情：${source.name}，生成时间 ${report.generatedAt}`
+    : "行情数据不可用或为测试数据，请以券商 App 实际行情为准。";
 }
 
 function renderLearning(report) {
