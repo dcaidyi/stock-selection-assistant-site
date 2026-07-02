@@ -26,13 +26,17 @@
             <h1>选股助手</h1>
           </div>
           <nav class="segmented" aria-label="页面导航">
-            <button class="active">今日</button>
-            <button>记录</button>
-            <button>学习</button>
+            <button class="active" data-tab="today" type="button">今日</button>
+            <button data-tab="records" type="button">记录</button>
+            <button data-tab="learning" type="button">学习</button>
           </nav>
         </header>
 
-        <section class="grid">
+        <div id="demo-banner" class="notice-banner">
+          当前为演示数据，用于验证网页和加密展示流程，不可作为交易依据。
+        </div>
+
+        <section id="tab-today" class="tab-panel grid">
           <article class="hero-panel">
             <p class="eyebrow">今日结论</p>
             <h2 id="primary-action">读取中</h2>
@@ -63,12 +67,24 @@
           </article>
         </section>
 
-        <section class="history-section">
+        <section id="tab-records" class="tab-panel history-section" hidden>
           <div class="history-header">
             <h2>最近 30 天</h2>
             <input id="search-input" type="search" placeholder="搜索：关键词 / 无候选 / KDJ" />
           </div>
           <div id="history-list" class="history-list"></div>
+        </section>
+
+        <section id="tab-learning" class="tab-panel learning-section" hidden>
+          <article class="learning-card">
+            <p class="eyebrow">今日学习</p>
+            <h2 id="teaching-topic">读取中</h2>
+            <p id="teaching-body" class="lead"></p>
+          </article>
+          <article class="learning-card">
+            <p class="eyebrow">数据和解释来源</p>
+            <div id="learning-sources" class="source-row"></div>
+          </article>
         </section>
       </section>
     </main>

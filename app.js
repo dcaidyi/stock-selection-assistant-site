@@ -10,6 +10,8 @@ function byId(id) {
   return document.getElementById(id);
 }
 
+let currentBundle = null;
+
 async function unlock() {
   byId("lock-error").hidden = true;
   byId("unlock-button").disabled = true;
@@ -50,9 +52,12 @@ async function loadDashboard(password) {
   if (!latest) {
     return false;
   }
+  currentBundle = { latest, history };
   byId("dashboard").hidden = false;
   renderLatest(latest);
   renderHistory(history.slice(0, 30));
+  renderLearning(latest);
+  showTab("today");
   byId("search-input").addEventListener("input", (event) => {
     const keyword = event.target.value.trim();
     const filtered = history.filter((item) => JSON.stringify(item).includes(keyword)).slice(0, 30);
@@ -103,6 +108,16 @@ function renderLatest(report) {
   byId("candidate").innerHTML = report.candidate ? renderCandidate(report.candidate) : "<p class='muted'>今日无候选。</p>";
 }
 
+function renderLearning(report) {
+  byId("teaching-topic").textContent = report.teachingTopic || "暂无学习主题";
+  byId("teaching-body").textContent = report.teachingBody || "今天还没有生成学习内容。";
+  byId("learning-sources").innerHTML = [
+    ...report.sources.map((source) => `${source.name} · ${source.status}`),
+    `解释生成 · ${report.aiProvider || "未知"}`,
+    "规则计算 · 系统程序",
+  ].map((label) => `<span class="chip">${escapeHtml(label)}</span>`).join("");
+}
+
 function renderHolding(holding) {
   const pnlClass = holding.unrealizedPnl >= 0 ? "positive" : "negative";
   return `
@@ -151,7 +166,21 @@ function base64ToBytes(value) {
   return bytes;
 }
 
+function showTab(tabName) {
+  for (const panel of document.querySelectorAll(".tab-panel")) {
+    panel.hidden = panel.id !== `tab-${tabName}`;
+  }
+  for (const button of document.querySelectorAll(".segmented button")) {
+    button.classList.toggle("active", button.dataset.tab === tabName);
+  }
+}
+
 byId("unlock-button").addEventListener("click", unlock);
 byId("password-input").addEventListener("keydown", (event) => {
   if (event.key === "Enter") unlock();
 });
+for (const button of document.querySelectorAll(".segmented button")) {
+  button.addEventListener("click", () => {
+    if (currentBundle) showTab(button.dataset.tab);
+  });
+}
