@@ -11,15 +11,29 @@ function byId(id) {
 }
 
 async function unlock() {
+  byId("lock-error").hidden = true;
+  byId("unlock-button").disabled = true;
+  byId("unlock-button").textContent = "正在进入...";
   const password = byId("password-input").value;
   const hash = await sha256(password);
   if (PASSWORD_HASH !== "replace-with-sha256-hash" && hash !== PASSWORD_HASH) {
     byId("lock-error").hidden = false;
+    byId("unlock-button").disabled = false;
+    byId("unlock-button").textContent = "进入";
+    return;
+  }
+  const loaded = await loadDashboard(password);
+  if (!loaded) {
+    byId("lock-error").textContent = "密码不正确，或报告数据暂时无法解密。";
+    byId("lock-error").hidden = false;
+    byId("dashboard").hidden = true;
+    byId("unlock-button").disabled = false;
+    byId("unlock-button").textContent = "进入";
     return;
   }
   byId("lock-screen").hidden = true;
-  byId("dashboard").hidden = false;
-  await loadDashboard(password);
+  byId("unlock-button").disabled = false;
+  byId("unlock-button").textContent = "进入";
 }
 
 async function fetchJson(path) {
@@ -34,10 +48,9 @@ async function loadDashboard(password) {
   const latest = bundle?.latest || null;
   const history = bundle?.history || [];
   if (!latest) {
-    byId("primary-action").textContent = "暂无报告";
-    byId("recommendation").textContent = "没有找到可解密的报告。请确认密码正确，或先运行本地生成脚本。";
-    return;
+    return false;
   }
+  byId("dashboard").hidden = false;
   renderLatest(latest);
   renderHistory(history.slice(0, 30));
   byId("search-input").addEventListener("input", (event) => {
@@ -45,6 +58,7 @@ async function loadDashboard(password) {
     const filtered = history.filter((item) => JSON.stringify(item).includes(keyword)).slice(0, 30);
     renderHistory(filtered);
   });
+  return true;
 }
 
 async function loadDevelopmentBundle() {
