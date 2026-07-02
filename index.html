@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>选股助手</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section id="lock-screen" class="lock-screen">
+        <div class="lock-panel">
+          <p class="eyebrow">私人页面</p>
+          <h1>选股助手</h1>
+          <p class="muted">输入密码查看今日决策和复盘。</p>
+          <input id="password-input" type="password" placeholder="访问密码" autocomplete="current-password" />
+          <button id="unlock-button">进入</button>
+          <p id="lock-error" class="error" hidden>密码不正确。</p>
+        </div>
+      </section>
+
+      <section id="dashboard" class="dashboard" hidden>
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">14:50 尾盘决策</p>
+            <h1>选股助手</h1>
+          </div>
+          <nav class="segmented" aria-label="页面导航">
+            <button class="active">今日</button>
+            <button>记录</button>
+            <button>学习</button>
+          </nav>
+        </header>
+
+        <section class="grid">
+          <article class="hero-panel">
+            <p class="eyebrow">今日结论</p>
+            <h2 id="primary-action">读取中</h2>
+            <p id="recommendation" class="lead"></p>
+            <div class="button-row">
+              <button>继续持有</button>
+              <button>卖出</button>
+              <button>不买入</button>
+              <button>换仓</button>
+              <button>跳过</button>
+            </div>
+          </article>
+
+          <aside class="reason-panel">
+            <p class="eyebrow">为什么这样判断</p>
+            <ol id="logic-steps"></ol>
+            <div id="source-row" class="source-row"></div>
+          </aside>
+
+          <article class="panel">
+            <p class="eyebrow">我的持仓</p>
+            <div id="holdings"></div>
+          </article>
+
+          <article class="panel">
+            <p class="eyebrow">新候选</p>
+            <div id="candidate"></div>
+          </article>
+        </section>
+
+        <section class="history-section">
+          <div class="history-header">
+            <h2>最近 30 天</h2>
+            <input id="search-input" type="search" placeholder="搜索：关键词 / 无候选 / KDJ" />
+          </div>
+          <div id="history-list" class="history-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
