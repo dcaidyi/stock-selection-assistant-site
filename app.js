@@ -100,6 +100,7 @@ async function decryptBundle(encrypted, password) {
 }
 
 function renderLatest(report) {
+  byId("report-title").textContent = report.title || report.generatedAt;
   byId("primary-action").textContent = report.primaryAction;
   byId("recommendation").textContent = report.recommendation;
   renderDataBanner(report);
