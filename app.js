@@ -130,13 +130,26 @@ function renderLearning(report) {
 
 function renderHolding(holding) {
   const pnlClass = holding.unrealizedPnl >= 0 ? "positive" : "negative";
+  const quoteMetrics = [
+    holding.turnoverRate !== undefined ? `换手率 ${Number(holding.turnoverRate).toFixed(2)}%` : null,
+    holding.turnoverAmount !== undefined ? `成交额 ${formatAmount(holding.turnoverAmount)}` : null,
+  ].filter(Boolean).join(" · ");
   return `
     <div class="holding-row">
       <strong>${escapeHtml(holding.name)} ${escapeHtml(holding.symbol)}</strong>
       <p class="muted">成本 ${holding.costPrice} · 现价 ${holding.currentPrice} · ${holding.shares} 股</p>
+      ${quoteMetrics ? `<p class="muted">${escapeHtml(quoteMetrics)}</p>` : ""}
       <p class="${pnlClass}">浮动盈亏 ${holding.unrealizedPnl.toFixed(2)} 元</p>
     </div>
   `;
+}
+
+function formatAmount(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "-";
+  if (number >= 100000000) return `${(number / 100000000).toFixed(2)} 亿`;
+  if (number >= 10000) return `${(number / 10000).toFixed(2)} 万`;
+  return number.toFixed(2);
 }
 
 function renderCandidate(candidate) {
